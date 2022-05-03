@@ -262,8 +262,8 @@
   }
 
   function navResizeFnStop() {
-    $(window).unbind("mousemove", navResizeFn);
-    window.removeEventListener("message", navMessageFn, false);
+    window.removeEventListener('mousemove', navResizeFn);
+    window.removeEventListener('message', navMessageFn, false);
   }
 
   function navMessageFn(e) {
