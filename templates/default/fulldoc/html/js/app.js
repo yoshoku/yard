@@ -208,7 +208,7 @@ function generateTOC() {
     }
     var title = $(this).attr('toc-title');
     if (typeof(title) == "undefined") title = $(this).text();
-    curli =$('<li><a href="#' + this.id + '">' + title + '</a></li>'); 
+    curli =$('<li><a href="#' + this.id + '">' + title + '</a></li>');
     toc.append(curli);
     lastTag = thisTag;
   });
@@ -296,7 +296,7 @@ function navigationChange() {
   };
 }
 
-$(document).ready(function() {
+document.addEventListener('DOMContentLoaded', function() {
   navResizer();
   navExpander();
   createSourceLinks();
