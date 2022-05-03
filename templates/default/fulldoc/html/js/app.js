@@ -272,15 +272,15 @@
   }
 
   function navResizer() {
-    $("#resizer").mousedown(function (e) {
+    document.querySelector('#resizer').addEventListener('mousedown', function(e) {
       e.preventDefault();
-      $(window).mousemove(navResizeFn);
-      window.addEventListener("message", navMessageFn, false);
+      window.addEventListener('mousemove', navResizeFn);
+      window.addEventListener('message', navMessageFn, false);
     });
-    $(window).mouseup(navResizeFnStop);
+    window.addEventListener('mouseup', navResizeFnStop);
 
     if (sessionStorage.navWidth) {
-      navResizeFn({ which: 1, pageX: parseInt(sessionStorage.navWidth, 10) });
+      navResizeFn({which: 1, pageX: parseInt(sessionStorage.navWidth, 10)});
     }
   }
 
