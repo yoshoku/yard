@@ -327,7 +327,7 @@
     };
   }
 
-  $(document).ready(function () {
+  document.addEventListener('DOMContentLoaded', function() {
     navResizer();
     navExpander();
     createSourceLinks();
