@@ -176,78 +176,91 @@
   }
 
   function generateTOC() {
-    if ($("#filecontents").length === 0) return;
-    var _toc = $('<ol class="top"></ol>');
+    if (document.querySelectorAll('#filecontents').length === 0) return;
+    var _toc = document.createElement('ol');
+    _toc.className = 'top';
     var show = false;
     var toc = _toc;
     var counter = 0;
-    var tags = ["h2", "h3", "h4", "h5", "h6"];
+    var tags = ['h2', 'h3', 'h4', 'h5', 'h6'];
     var i;
     var curli;
-    if ($("#filecontents h1").length > 1) tags.unshift("h1");
-    for (i = 0; i < tags.length; i++) {
-      tags[i] = "#filecontents " + tags[i];
-    }
+    if (document.querySelectorAll('#filecontents h1').length > 1) tags.unshift('h1');
+    for (i = 0; i < tags.length; i++) { tags[i] = '#filecontents ' + tags[i]; }
     var lastTag = parseInt(tags[0][1], 10);
-    $(tags.join(", ")).each(function () {
-      if ($(this).parents(".method_details .docstring").length != 0) return;
-      if (this.id == "filecontents") return;
-      show = true;
-      var thisTag = parseInt(this.tagName[1], 10);
-      if (this.id.length === 0) {
-        var proposedId = $(this).attr("toc-id");
-        if (typeof proposedId != "undefined") this.id = proposedId;
-        else {
-          var proposedId = $(this)
-            .text()
-            .replace(/[^a-z0-9-]/gi, "_");
-          if ($("#" + proposedId).length > 0) {
-            proposedId += counter;
-            counter++;
+    document.querySelectorAll(tags.join(', ')).forEach(function(el) {
+      var targetEls = document.querySelectorAll('.method_details .docstring');
+      if (targetEls.length != 0) {
+        var finded = false;
+        var parentEl = el;
+        while (!finded && ((parentEl = parentEl.parentElement) !== null)) {
+          for (i = 0; i < targetEls.length; i++) {
+            if (parentEl.isEqualNode(targetEls[i])) {
+              finded = true;
+              break;
+            }
           }
-          this.id = proposedId;
+        }
+        if (finded) return;
+      }
+      if (el.id == "filecontents") return;
+      show = true;
+      var thisTag = parseInt(el.tagName[1], 10);
+      if (el.id.length === 0) {
+        var proposedId = el.getAttribute('toc-id');
+        if (typeof(proposedId) != "undefined") el.id = proposedId;
+        else {
+          var proposedId = el.textContent.replace(/[^a-z0-9-]/ig, '_');
+          if (document.querySelectorAll('#' + proposedId).length > 0) { proposedId += counter; counter++; }
+          el.id = proposedId;
         }
       }
       if (thisTag > lastTag) {
         for (i = 0; i < thisTag - lastTag; i++) {
-          if (typeof curli == "undefined") {
-            curli = $("<li/>");
-            toc.append(curli);
+          if ( typeof(curli) == "undefined" ) {
+            curli = document.createElement('li');
+            toc.appendChild(curli);
           }
-          toc = $("<ol/>");
-          curli.append(toc);
+          toc = document.createElement('ol');
+          curli.appendChild(toc);
           curli = undefined;
         }
       }
       if (thisTag < lastTag) {
         for (i = 0; i < lastTag - thisTag; i++) {
-          toc = toc.parent();
-          toc = toc.parent();
+          toc = toc.parentNode;
+          toc = toc.parentNode;
         }
       }
-      var title = $(this).attr("toc-title");
-      if (typeof title == "undefined") title = $(this).text();
-      curli = $('<li><a href="#' + this.id + '">' + title + "</a></li>");
-      toc.append(curli);
+      var title = el.getAttribute('toc-title');
+      if (title === null) title = el.textContent;
+      curli = document.createElement('li');
+      var curli_a = document.createElement('a');
+      curli_a.href = '#' + el.id;
+      curli_a.textContent = title;
+      curli.appendChild(curli_a);
+      toc.appendChild(curli);
       lastTag = thisTag;
     });
     if (!show) return;
-    html =
-      '<div id="toc"><p class="title hide_toc"><a href="#"><strong>Table of Contents</strong></a></p></div>';
-    $("#content").prepend(html);
-    $("#toc").append(_toc);
-    $("#toc .hide_toc").toggle(
-      function () {
-        $("#toc .top").slideUp("fast");
-        $("#toc").toggleClass("hidden");
-        $("#toc .title small").toggle();
-      },
-      function () {
-        $("#toc .top").slideDown("fast");
-        $("#toc").toggleClass("hidden");
-        $("#toc .title small").toggle();
+    var tocEl = document.createElement('div');
+    tocEl.id = 'toc';
+    tocEl.innerHTML = '<p class="title hide_toc"><a href="#"><strong>Table of Contents</strong></a></p>';
+    var contentEl = document.querySelector('#content');
+    contentEl.insertBefore(tocEl, contentEl.firstChild);
+    toc = document.querySelector('#toc');
+    toc.appendChild(_toc);
+    document.querySelector('#toc .hide_toc').addEventListener('click', function() {
+      var tocTitleSmallEl = document.querySelector('#toc .title small');
+      if (document.querySelector('#toc').classList.contains('hidden')) {
+        document.querySelector('#toc .top').style.display = 'block';
+        if (tocTitleSmallEl) tocTitleSmallEl.style.display = 'block';
+      } else {
+        document.querySelector('#toc .top').style.display = 'none';
+        if (tocTitleSmallEl) tocTitleSmallEl.style.display = 'none';
       }
-    );
+      document.querySelector('#toc').classList.toggle('hidden');
+    });
   }
 
   function navResizeFn(e) {
