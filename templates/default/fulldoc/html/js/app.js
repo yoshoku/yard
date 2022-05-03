@@ -239,7 +239,7 @@ function navResizeFn(e) {
 }
 
 function navResizeFnStop() {
-  $(window).unbind('mousemove', navResizeFn);
+  window.removeEventListener('mousemove', navResizeFn);
   window.removeEventListener('message', navMessageFn, false);
 }
 
