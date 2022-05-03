@@ -290,8 +290,9 @@ function navigationChange() {
   // This works around the broken anchor navigation with the YARD template.
   window.onpopstate = function() {
     var hash = window.location.hash;
-    if (hash !== '' && $(hash)[0]) {
-      $(hash)[0].scrollIntoView();
+    if (hash !== '') {
+      var el = document.querySelector(hash);
+      if (el) el.scrollIntoView();
     }
   };
 }
