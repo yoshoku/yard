@@ -257,8 +257,9 @@
     }
 
     sessionStorage.navWidth = e.pageX.toString();
-    $(".nav_wrap").css("width", e.pageX);
-    $(".nav_wrap").css("-ms-flex", "inherit");
+    var el = document.querySelector('.nav_wrap');
+    el.style.width = e.pageX + 'px';
+    el.style.msFlex = 'inherit';
   }
 
   function navResizeFnStop() {
