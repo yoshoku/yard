@@ -279,11 +279,14 @@ function navExpander() {
 
 function mainFocus() {
   var hash = window.location.hash;
-  if (hash !== '' && $(hash)[0]) {
-    $(hash)[0].scrollIntoView();
+  if (hash !== '') {
+    var el = document.querySelector(hash);
+    if (el) el.scrollIntoView();
   }
 
-  setTimeout(function() { $('#main').focus(); }, 10);
+  setTimeout(function() {
+    document.querySelector('#main').focus();
+  }, 10);
 }
 
 function navigationChange() {
