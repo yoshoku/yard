@@ -9,19 +9,28 @@
   } catch (e) {}
 
   function createSourceLinks() {
-    $(".method_details_list .source_code").before(
-      "<span class='showSource'>[<a href='#' class='toggleSource'>View source</a>]</span>"
-    );
-    $(".toggleSource").toggle(
-      function () {
-        $(this).parent().nextAll(".source_code").slideDown(100);
-        $(this).text("Hide source");
-      },
-      function () {
-        $(this).parent().nextAll(".source_code").slideUp(100);
-        $(this).text("View source");
-      }
-    );
+    document.querySelectorAll('.method_details_list .source_code').forEach(function(el) {
+      var aNode = document.createElement('a');
+      aNode.href = '#';
+      aNode.className = 'toggleSource';
+      aNode.appendChild(document.createTextNode('View source'));
+      aNode.addEventListener('click', function(e) {
+        e.preventDefault();
+        if (this.textContent === 'View source') {
+          this.parentNode.nextElementSibling.style.display = 'block';
+          this.textContent = 'Hide source';
+        } else {
+          this.parentNode.nextElementSibling.style.display = 'none';
+          this.textContent = 'View source';
+        }
+      });
+      var spanNode = document.createElement('span');
+      spanNode.className = 'showSource';
+      spanNode.appendChild(document.createTextNode('['));
+      spanNode.appendChild(aNode);
+      spanNode.appendChild(document.createTextNode(']'));
+      el.parentNode.insertBefore(spanNode, el);
+    });
   }
 
   function createDefineLinks() {
