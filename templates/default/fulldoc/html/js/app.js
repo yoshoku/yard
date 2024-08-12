@@ -95,9 +95,13 @@
   }
 
   function linkSummaries() {
-    $(".summary_signature").click(function () {
-      document.location = $(this).find("a").attr("href");
-    });
+    var sumSignEl = document.querySelector('.summary_signature');
+    if (sumSignEl) {
+      sumSignEl.addEventListener('click', function() {
+        var aTag = this.getElementsByTagName('a')[0];
+        if (aTag) document.location = aTag.getAttribute('href');
+      });
+    }
   }
 
   function summaryToggle() {
