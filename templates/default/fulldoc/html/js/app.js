@@ -35,20 +35,27 @@
 
   function createDefineLinks() {
     var tHeight = 0;
-    $(".defines").after(" <a href='#' class='toggleDefines'>more...</a>");
-    $(".toggleDefines").toggle(
-      function () {
-        tHeight = $(this).parent().prev().height();
-        $(this).prev().css("display", "inline");
-        $(this).parent().prev().height($(this).parent().height());
-        $(this).text("(less)");
-      },
-      function () {
-        $(this).prev().hide();
-        $(this).parent().prev().height(tHeight);
-        $(this).text("more...");
-      }
-    );
+    var defsEl = document.querySelector('.defines');
+    if (defsEl) {
+      var aNode = document.createElement('a');
+      aNode.href = '#';
+      aNode.className = 'toggleDefines';
+      aNode.appendChild(document.createTextNode('more...'));
+      aNode.addEventListener('click', function(e) {
+        e.preventDefault();
+        if (this.textContent === 'more...') {
+          tHeight = this.parentNode.previousElementSibling.innerHeight;
+          this.previousElementSibling.style.display = 'inline';
+          this.parentNode.previousElementSibling.style.height = this.parentNode.innerHeight + 'px';
+          this.textContent = '(less)';
+        } else {
+          this.previousElementSibling.style.display = 'none';
+          this.parentNode.previousElementSibling.style.height = tHeight + 'px';
+          this.textContent = 'more...';
+        }
+      });
+      defsEl.parentNode.insertBefore(aNode, defsEl.nextElementSibling);
+    }
   }
 
   function createFullTreeLinks() {
