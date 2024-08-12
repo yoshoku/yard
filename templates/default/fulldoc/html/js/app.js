@@ -60,19 +60,22 @@
 
   function createFullTreeLinks() {
     var tHeight = 0;
-    $(".inheritanceTree").toggle(
-      function () {
-        tHeight = $(this).parent().prev().height();
-        $(this).parent().toggleClass("showAll");
-        $(this).text("(hide)");
-        $(this).parent().prev().height($(this).parent().height());
-      },
-      function () {
-        $(this).parent().toggleClass("showAll");
-        $(this).parent().prev().height(tHeight);
-        $(this).text("show all");
-      }
-    );
+    var inhTreeEl = document.querySelector('.inheritanceTree');
+    if (inhTreeEl) {
+      inhTreeEl.addEventListener('click', function(e) {
+        e.preventDefault();
+        if (this.textContent === 'show all') {
+          tHeight = this.parentNode.previousElementSibling.innerHeight;
+          this.parentNode.classList.add('showAll');
+          this.parentNode.previousElementSibling.style.height = this.parentNode.innerHeight + 'px';
+          this.textContent = '(hide)';
+        } else {
+          this.parentNode.classList.remove('showAll');
+          this.parentNode.previousElementSibling.style.height = tHeight + 'px';
+          this.textContent = 'show all';
+        }
+      });
+    }
   }
 
   function searchFrameButtons() {
