@@ -132,33 +132,40 @@
   }
 
   function summaryToggle() {
-    $(".summary_toggle").click(function (e) {
-      e.preventDefault();
-      localStorage.summaryCollapsed = $(this).text();
-      $(".summary_toggle").each(function () {
-        $(this).text($(this).text() == "collapse" ? "expand" : "collapse");
-        var next = $(this).parent().parent().nextAll("ul.summary").first();
-        if (next.hasClass("compact")) {
-          next.toggle();
-          next.nextAll("ul.summary").first().toggle();
-        } else if (next.hasClass("summary")) {
-          var list = $('<ul class="summary compact" />');
-          list.html(next.html());
-          list.find(".summary_desc, .note").remove();
-          list.find("a").each(function () {
-            $(this).html($(this).find("strong").html());
-            $(this).parent().html($(this)[0].outerHTML);
-          });
-          next.before(list);
-          next.toggle();
-        }
+    var summaryToggles = document.querySelectorAll('.summary_toggle')
+    if (summaryToggles.length === 0) return false;
+
+    summaryToggles.forEach(function(el) {
+      el.addEventListener('click', function(e) {
+        e.preventDefault();
+        localStorage.summaryCollapsed = this.textContent;
+        document.querySelectorAll('.summary_toggle').forEach(function(toggleEl) {
+          toggleEl.textContent = toggleEl.textContent == 'collapse' ? 'expand' : 'collapse';
+          var next = nextAll(toggleEl.parentNode.parentNode, 'ul.summary')[0];
+          if (next.classList.contains('compact')) {
+            var firstSummary = nextAll(next, 'ul.summary')[0];
+            firstSummary.style.display = firstSummary.style.display === 'none' ? 'block' : 'none';
+            next.style.display = next.style.display === 'none' ? 'block' : 'none';
+          } else if (next.classList.contains('summary')) {
+            var list = document.createElement('ul');
+            list.className = 'summary compact';
+            list.innerHTML = next.innerHTML;
+            list.querySelectorAll('.summary_desc, .note').forEach(function(noteEl) { noteEl.remove(); });
+            list.querySelectorAll('a').forEach(function(aTag) {
+              aTag.innerHTML = aTag.querySelector('strong').innerHTML;
+              aTag.parentNode.innerHTML = aTag.outerHTML;
+            });
+            next.parentNode.insertBefore(list, next);
+            next.style.display = next.style.display === 'none' ? 'block' : 'none';
+          }
+        });
+        return false;
       });
-      return false;
     });
-    if (localStorage.summaryCollapsed == "collapse") {
-      $(".summary_toggle").first().click();
+    if (localStorage.summaryCollapsed == 'collapse') {
+      summaryToggles[0].click();
     } else {
-      localStorage.summaryCollapsed = "expand";
+      localStorage.summaryCollapsed = 'expand';
     }
   }
 
