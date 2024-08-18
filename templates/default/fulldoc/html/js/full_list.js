@@ -13,8 +13,8 @@ RegExp.escape = function(text) {
 }
 
 function escapeShortcut() {
-  $(document).keydown(function(evt) {
-    if (evt.which == 27) {
+  document.addEventListener('keydown', function(e) {
+    if (e.which == 27) {
       window.parent.postMessage('navEscape', '*');
     }
   });
