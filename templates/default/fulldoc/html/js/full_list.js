@@ -21,12 +21,15 @@ function escapeShortcut() {
 }
 
 function navResizer() {
-  $(window).mousemove(function(e) {
+  window.addEventListener('mousemove', function(e) {
     window.parent.postMessage({
-      action: 'mousemove', event: {pageX: e.pageX, which: e.which}
+      action: 'mousemove', event: { pageX: e.pageX, which: e.which }
     }, '*');
-  }).mouseup(function(e) {
-    window.parent.postMessage({action: 'mouseup'}, '*');
+  });
+  window.addEventListener('mouseup', function(e) {
+    window.parent.postMessage({
+      action: 'mouseup'
+    }, '*');
   });
   window.parent.postMessage("navReady", "*");
 }
