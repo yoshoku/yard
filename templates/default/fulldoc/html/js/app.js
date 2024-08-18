@@ -8,6 +8,14 @@
     sessionStorage = window.sessionStorage;
   } catch (e) {}
 
+  function nextAll(el, selector) {
+    var nextEls = [];
+    while (el = el.nextElementSibling) {
+      if (el.matches(selector)) nextEls.push(el);
+    }
+    return nextEls;
+  }
+
   function createSourceLinks() {
     document.querySelectorAll('.method_details_list .source_code').forEach(function(el) {
       var aNode = document.createElement('a');
@@ -155,44 +163,50 @@
   }
 
   function constantSummaryToggle() {
-    $(".constants_summary_toggle").click(function (e) {
-      e.preventDefault();
-      localStorage.summaryCollapsed = $(this).text();
-      $(".constants_summary_toggle").each(function () {
-        $(this).text($(this).text() == "collapse" ? "expand" : "collapse");
-        var next = $(this).parent().parent().nextAll("dl.constants").first();
-        if (next.hasClass("compact")) {
-          next.toggle();
-          next.nextAll("dl.constants").first().toggle();
-        } else if (next.hasClass("constants")) {
-          var list = $('<dl class="constants compact" />');
-          list.html(next.html());
-          list.find("dt").each(function () {
-            $(this).addClass("summary_signature");
-            $(this).text($(this).text().split("=")[0]);
-            if ($(this).has(".deprecated").length) {
-              $(this).addClass("deprecated");
-            }
-          });
-          // Add the value of the constant as "Tooltip" to the summary object
-          list.find("pre.code").each(function () {
-            console.log($(this).parent());
-            var dt_element = $(this).parent().prev();
-            var tooltip = $(this).text();
-            if (dt_element.hasClass("deprecated")) {
-              tooltip = "Deprecated. " + tooltip;
-            }
-            dt_element.attr("title", tooltip);
-          });
-          list.find(".docstring, .tags, dd").remove();
-          next.before(list);
-          next.toggle();
-        }
+    var constantsSummaryToggles = document.querySelectorAll('.constants_summary_toggle')
+    if (constantsSummaryToggles.length === 0) return;
+
+    constantsSummaryToggles.forEach(function(el) {
+      el.addEventListener('click', function(e) {
+        e.preventDefault();
+        localStorage.summaryCollapsed = this.textContent;
+        document.querySelectorAll('.constants_summary_toggle').forEach(function(toggleEl) {
+          toggleEl.textContent = toggleEl.textContent == "collapse" ? "expand" : "collapse";
+          var next = nextAll(toggleEl.parentNode.parentNode, 'dl.constants')[0];
+          if (next.classList.contains('compact')) {
+            var firstConstant = nextAll(next, 'dl.constants')[0];
+            firstConstant.style.display = firstConstant.style.display === 'none' ? 'block' : 'none';
+            next.style.display = next.style.display === 'none' ? 'block' : 'none';
+          } else if (next.classList.contains('constants')) {
+            var list = document.createElement('dl');
+            list.className = 'constants compact';
+            list.innerHTML = next.innerHTML;
+            list.querySelectorAll('dt').forEach(function(dtEl) {
+              dtEl.classList.add('summary_signature');
+              dtEl.textContent = dtEl.textContent.split('=')[0];
+              if (dtEl.querySelectorAll('.deprecated').length > 0) {
+                dtEl.classList.add('deprecated');
+              }
+            });
+            // Add the value of the constant as "Tooltip" to the summary object
+            list.querySelectorAll('pre.code').forEach(function(preEl) {
+              var dtEl = preEl.parentNode.previousElementSibling;
+              var tooltip = preEl.textContent;
+              if (dtEl.classList.contains('deprecated')) {
+                 tooltip = 'Deprecated. ' + tooltip;
+              };
+              dtEl.setAttribute('title', tooltip);
+            });
+            list.querySelectorAll('.docstring, .tags, dd').forEach(function(ddEl) { ddEl.remove(); });
+            next.parentNode.insertBefore(list, next);
+            next.style.display = next.style.display === 'none' ? 'block' : 'none';
+          }
+        });
+        return false;
       });
-      return false;
     });
     if (localStorage.summaryCollapsed == "collapse") {
-      $(".constants_summary_toggle").first().click();
+      constantsSummaryToggles[0].click();
     } else {
       localStorage.summaryCollapsed = "expand";
     }
