@@ -109,15 +109,23 @@
   }
 
   function toggleSearchFrame(id, link) {
-    var frame = $("#nav");
-    $("#search a").removeClass("active").addClass("inactive");
-    if (frame.attr("src") === link && frame.css("display") !== "none") {
-      frame.slideUp(100);
-      $("#search a").removeClass("active inactive");
+    var frame = document.getElementById('nav');
+    document.querySelectorAll('#search a').forEach(function(el) {
+      el.classList.remove('active');
+      el.classList.add('inactive');
+    });
+    if (frame.getAttribute('src') === link && frame.style.display !== 'none') {
+      frame.style.display = 'none';
+      document.querySelectorAll('#search a').forEach(function(el) {
+        el.classList.remove('active', 'inactive');
+      });
     } else {
-      $(id).addClass("active").removeClass("inactive");
-      if (frame.attr("src") !== link) frame.attr("src", link);
-      frame.slideDown(100);
+      id.classList.add('active');
+      id.classList.remove('inactive');
+      if (frame.getAttribute('src') !== link) {
+        frame.setAttribute('src', link);
+      }
+      frame.style.display = 'block';
     }
   }
 
