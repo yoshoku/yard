@@ -102,7 +102,7 @@ function populateSearchCache() {
 }
 
 function enableSearch() {
-  $('#search input').keyup(function(event) {
+  document.querySelector('#search input').addEventListener('keyup', function(event) {
     if (ignoredKeyPress(event)) return;
     if (this.value === "") {
       clearSearch();
@@ -111,7 +111,11 @@ function enableSearch() {
     }
   });
 
-  $('#full_list').after("<div id='noresults' role='status' style='display: none'></div>");
+  var el = document.getElementById('full_list');
+  var divEl = document.createElement('div');
+  divEl.id = 'noresults';
+  divEl.style.display = 'none';
+  el.parentNode.insertBefore(divEl, el.nextSibling);
 }
 
 function ignoredKeyPress(event) {
