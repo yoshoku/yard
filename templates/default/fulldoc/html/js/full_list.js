@@ -1,6 +1,6 @@
 (function() {
 
-var $clicked = $(null);
+var clicked = null;
 var searchTimeout = null;
 var searchCache = [];
 var caseSensitiveMatch = false;
@@ -41,21 +41,20 @@ function clearSearchTimeout() {
 
 function enableLinks() {
   // load the target page in the parent window
-  $('#full_list li').on('click', function(evt) {
-    $('#full_list li').removeClass('clicked');
-    $clicked = $(this);
-    $clicked.addClass('clicked');
-    evt.stopPropagation();
+  document.querySelectorAll('#full_list li').forEach(function(li) {
+    li.addEventListener('click', function(evt) {
+      document.querySelectorAll('#full_list li').forEach(function(el) { el.classList.remove('clicked'); });
+      clicked = this;
+      this.classList.add('clicked');
+      evt.stopPropagation();
 
-    if (evt.target.tagName === 'A') return true;
+      if (evt.target.tagName === 'A') return true;
 
-    var elem = $clicked.find('> .item .object_link a')[0];
-    var e = evt.originalEvent;
-    var newEvent = new MouseEvent(evt.originalEvent.type);
-    newEvent.initMouseEvent(e.type, e.canBubble, e.cancelable, e.view, e.detail, e.screenX, e.screenY, e.clientX, e.clientY, e.ctrlKey, e.altKey, e.shiftKey, e.metaKey, e.button, e.relatedTarget);
-    elem.dispatchEvent(newEvent);
-    evt.preventDefault();
-    return false;
+      var el = this.querySelectorAll(':scope > .item .object_link a')[0];
+      el.dispatchEvent(new MouseEvent(evt.type, evt));
+      evt.preventDefault();
+      return false;
+    });
   });
 }
 
