@@ -60,28 +60,29 @@ function enableLinks() {
 
 function enableToggles() {
   // show/hide nested classes on toggle click
-  $('#full_list a.toggle').on('click', function(evt) {
-    evt.stopPropagation();
-    evt.preventDefault();
-    $(this).parent().parent().toggleClass('collapsed');
-    $(this).attr('aria-expanded', function (i, attr) {
-        return attr == 'true' ? 'false' : 'true'
+  document.querySelectorAll('#full_list a.toggle').forEach(function(el) {
+    el.addEventListener('click', function(evt) {
+      evt.stopPropagation();
+      evt.preventDefault();
+      this.parentElement.parentElement.classList.toggle('collapsed');
+      var ariaExpanded = this.getAttribute('aria-expanded') == 'true' ? 'false' : 'true';
+      this.setAttribute('aria-expanded', ariaExpanded);
+      highlight();
     });
-    highlight();
   });
 
   // navigation of nested classes using keyboard
-  $('#full_list a.toggle').on('keypress',function(evt) {
-    // enter key is pressed
-    if (evt.which == 13) {
-      evt.stopPropagation();
-      evt.preventDefault();
-      $(this).parent().parent().toggleClass('collapsed');
-      $(this).attr('aria-expanded', function (i, attr) {
-          return attr == 'true' ? 'false' : 'true'
-      });
-      highlight();
-    }
+  document.querySelectorAll('#full_list a.toggle').forEach(function(el) {
+    el.addEventListener('keypress', function(evt) {
+      if (evt.code == 13) {
+        evt.stopPropagation();
+        evt.preventDefault();
+        this.parentElement.parentElement.classList.toggle('collapsed');
+        var ariaExpanded = this.getAttribute('aria-expanded') == 'true' ? 'false' : 'true';
+        this.setAttribute('aria-expanded', ariaExpanded);
+        highlight();
+      }
+    });
   });
 }
 
