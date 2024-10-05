@@ -87,15 +87,14 @@ function enableToggles() {
 }
 
 function populateSearchCache() {
-  $('#full_list li .item').each(function() {
-    var $node = $(this);
-    var $link = $node.find('.object_link a');
-    if ($link.length > 0) {
+  document.querySelectorAll('#full_list li .item').forEach(function(node) {
+    var link = node.querySelector('.object_link a');
+    if (link) {
       searchCache.push({
-        node: $node,
-        link: $link,
-        name: $link.text(),
-        fullName: $link.attr('title').split(' ')[0]
+        node: node,
+        link: link,
+        name: link.textContent,
+        fullName: link.getAttribute('title').split(' ')[0]
       });
     }
   });
