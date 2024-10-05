@@ -154,8 +154,12 @@ function clearSearch() {
 
 function performSearch(searchString) {
   clearSearchTimeout();
-  $('#full_list, #content').addClass('insearch');
-  $('#noresults').text('').hide();
+  document.querySelectorAll('#full_list, #content').forEach(function(el) {
+    el.classList.add('insearch');
+  });
+  var el = document.getElementById('noresults');
+  el.textContent = '';
+  el.style.display = 'none';
   partialSearch(searchString, 0);
 }
 
@@ -168,14 +172,16 @@ function partialSearch(searchString, offset) {
     var matchString = buildMatchString(searchString);
     var matchRegexp = new RegExp(matchString, caseSensitiveMatch ? "" : "i");
     if (searchName.match(matchRegexp) == null) {
-      item.node.removeClass('found');
-      item.link.text(item.link.text());
-    }
-    else {
-      item.node.addClass('found');
-      item.node.removeClass(lastRowClass).addClass(lastRowClass == 'r1' ? 'r2' : 'r1');
-      lastRowClass = item.node.hasClass('r1') ? 'r1' : 'r2';
-      item.link.html(item.name.replace(matchRegexp, "<strong>$&</strong>"));
+      item.node.classList.remove('found');
+      item.link.textContent = item.link.textContent;
+    } else {
+      item.node.classList.add('found');
+      if (item.node.classList.contains(lastRowClass)) {
+        item.node.classList.remove(lastRowClass);
+      }
+      item.node.classList.add(lastRowClass == 'r1' ? 'r2' : 'r1');
+      lastRowClass = item.node.classList.contains('r1') ? 'r1' : 'r2';
+      item.link.innerHTML = item.name.replace(matchRegexp, "<strong>$&</strong>");
     }
   }
   if(i == searchCache.length) {
@@ -190,15 +196,20 @@ function partialSearch(searchString, offset) {
 function searchDone() {
   searchTimeout = null;
   highlight();
-  var found = $('#full_list li:visible').size();
+  var found = 0;
+  document.querySelectorAll('#full_list li').forEach(function(el) {
+    if (el.offsetWidth > 0 || el.offsetHeight > 0 || el.getClientRects().length > 0) {
+      found += 1;
+    }
+  });
   if (found === 0) {
-    $('#noresults').text('No results were found.');
+    document.getElementById('noresults').textContent = 'No results were found.';
   } else {
     // This is read out to screen readers
-    $('#noresults').text('There are ' + found + ' results.');
+    document.getElementById('noresults').textContent = 'There are ' + found + ' results.';
   }
-  $('#noresults').show();
-  $('#content').removeClass('insearch');
+  document.getElementById('noresults').style.display = 'block';
+  document.getElementById('content').classList.remove('insearch');
 }
 
 function buildMatchString(searchString, event) {
