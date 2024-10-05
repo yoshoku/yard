@@ -130,12 +130,25 @@ function ignoredKeyPress(event) {
 
 function clearSearch() {
   clearSearchTimeout();
-  $('#full_list .found').removeClass('found').each(function() {
-    var $link = $(this).find('.object_link a');
-    $link.text($link.text());
+  document.querySelectorAll('#full_list .found').forEach(function(el) {
+    el.classList.remove('found');
+    var link = el.querySelector('.object_link a');
+    link.textContent = link.textContent;
   });
-  $('#full_list, #content').removeClass('insearch');
-  $clicked.parents().removeClass('collapsed');
+  document.querySelectorAll('#full_list, #content').forEach(function(el) {
+    el.classList.remove('insearch');
+  });
+  if (clicked) {
+    var parentNode = clicked.parentNode;
+    while (parentNode && parentNode.nodeType != 9) {
+      if (parentNode.nodeType == 1) {
+        if (parentNode.classList.contains('collapsed')) {
+          parentNode.classList.remove('collapsed');
+        }
+      }
+      parentNode = parentNode.parentNode;
+    }
+  }
   highlight();
 }
 
