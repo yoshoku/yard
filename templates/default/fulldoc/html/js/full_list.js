@@ -217,7 +217,7 @@ function buildMatchString(searchString, event) {
   var regexSearchString = RegExp.escape(searchString);
   if (caseSensitiveMatch) {
     regexSearchString += "|" +
-      $.map(searchString.split(''), function(e) { return RegExp.escape(e); }).
+      searchString.split('').map(function(e) { return RegExp.escape(e); }).
       join('.+?');
   }
   return regexSearchString;
