@@ -224,8 +224,16 @@ function buildMatchString(searchString, event) {
 }
 
 function highlight() {
-  $('#full_list li:visible').each(function(n) {
-    $(this).removeClass('even odd').addClass(n % 2 == 0 ? 'odd' : 'even');
+  document.querySelectorAll('#full_list li').forEach(function(el, n) {
+    if (el.offsetWidth > 0 || el.offsetHeight > 0 || el.getClientRects().length > 0) {
+      if (el.classList.contains('even')) {
+        el.classList.remove('even');
+      }
+      if (el.classList.contains('odd')) {
+        el.classList.remove('odd');
+      }
+      el.classList.add(n % 2 == 0 ? 'odd' : 'even');
+    }
   });
 }
 
