@@ -294,7 +294,7 @@ function windowEvents(event) {
 
 window.addEventListener("message", windowEvents, false);
 
-$(document).ready(function() {
+document.addEventListener('DOMContentLoaded', function() {
   escapeShortcut();
   navResizer();
   enableLinks();
