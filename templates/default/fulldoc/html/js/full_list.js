@@ -242,18 +242,44 @@ function highlight() {
  * children.
  */
 function expandTo(path) {
-  var $target = $(document.getElementById('object_' + path));
-  $target.addClass('clicked');
-  $target.removeClass('collapsed');
-  $target.parentsUntil('#full_list', 'li').removeClass('collapsed');
+  var target = document.getElementById('object_' + path);
+  if (target) {
+    target.classList.add('clicked');
+    if (target.classList.contains('collapsed')) {
+      target.classList.remove('collapsed');
+    }
+    var parentNode = target.parentNode;
+    while (parentNode && parentNode.nodeType != 9) {
+      if (parentNode.nodeType == 1) {
+        if (parentNode.id == 'full_list') break;
+        if (parentNode.tagName == 'LI') {
+          if (parentNode.classList.contains('collapsed')) {
+            parentNode.classList.remove('collapsed');
+          }
+        }
+      }
+      parentNode = parentNode.parentNode;
+    }
 
-  $target.find('a.toggle').attr('aria-expanded', 'true')
-  $target.parentsUntil('#full_list', 'li').each(function(i, el) {
-    $(el).find('> div > a.toggle').attr('aria-expanded', 'true');
-  });
+    var toggle = target.querySelector('a.toggle');
+    if (toggle) {
+      toggle.setAttribute('aria-expanded', 'true');
+    }
+    parentNode = target.parentNode;
+    while (parentNode && parentNode.nodeType != 9) {
+      if (parentNode.nodeType == 1) {
+        if (parentNode.id == 'full_list') break;
+        if (parentNode.tagName == 'LI') {
+          toggle = parentNode.querySelector('a.toggle')
+          if (toggle) {
+            toggle.setAttribute('aria-expanded', 'true');
+          }
+        }
+      }
+      parentNode = parentNode.parentNode;
+    }
 
-  if($target[0]) {
-    window.scrollTo(window.scrollX, $target.offset().top - 250);
+    window.scrollTo(window.scrollX, target.offsetTop - 250);
     highlight();
   }
 }
